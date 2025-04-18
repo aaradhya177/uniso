@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowLeft, Mail, Lock, EyeOff, Eye } from "lucide-react"
@@ -9,10 +10,48 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
+import { authApi } from "@/lib/api"
+import { toast } from "sonner"
 
 export default function LoginPage() {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [selectedUniversity, setSelectedUniversity] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  })
+
+  // Handle input change
+  const handleChange = (e) => {
+    const { id, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }))
+  }
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    try {
+      const response = await authApi.login(formData)
+      
+      // Show success message
+      toast.success("Login successful!")
+      
+      // Redirect to dashboard
+      router.push("/dashboard")
+    } catch (error) {
+      console.error("Login failed:", error)
+      toast.error(error.message || "Login failed. Please check your credentials.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   // Sample universities data
   const universities = [
@@ -152,49 +191,66 @@ export default function LoginPage() {
                       University ID
                     </TabsTrigger>
                   </TabsList>
-                  <TabsContent value="email" className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-gray-300">
-                        Email
-                      </Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                        <Input
-                          id="email"
-                          placeholder="name@university.edu"
-                          type="email"
-                          className="pl-10 bg-black/50 border-gray-800 focus-visible:ring-blue-500 text-white"
-                          autoComplete="email"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="password" className="text-gray-300">
-                          Password
+                  <form onSubmit={handleSubmit}>
+                    <TabsContent value="email" className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="email" className="text-gray-300">
+                          Email
                         </Label>
-                        <Link href="/forgot-password" className="text-xs text-blue-400 hover:text-blue-300">
-                          Forgot password?
-                        </Link>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+                          <Input
+                            id="email"
+                            placeholder="name@university.edu"
+                            type="email"
+                            className="pl-10 bg-black/50 border-gray-800 focus-visible:ring-blue-500 text-white"
+                            autoComplete="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
                       </div>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                        <Input
-                          id="password"
-                          type={showPassword ? "text" : "password"}
-                          className="pl-10 pr-10 bg-black/50 border-gray-800 focus-visible:ring-blue-500 text-white"
-                          autoComplete="current-password"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-3 text-gray-500 hover:text-gray-300"
-                        >
-                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </button>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor="password" className="text-gray-300">
+                            Password
+                          </Label>
+                          <Link href="/forgot-password" className="text-xs text-blue-400 hover:text-blue-300">
+                            Forgot password?
+                          </Link>
+                        </div>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+                          <Input
+                            id="password"
+                            type={showPassword ? "text" : "password"}
+                            className="pl-10 pr-10 bg-black/50 border-gray-800 focus-visible:ring-blue-500 text-white"
+                            autoComplete="current-password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-3 text-gray-500 hover:text-gray-300"
+                          >
+                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </TabsContent>
+                      
+                      <Button 
+                        type="submit"
+                        className="w-full mt-6 bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-700 hover:to-pink-700 text-white"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Signing in..." : "Sign in"}
+                      </Button>
+                    </TabsContent>
+                  </form>
+
                   <TabsContent value="university" className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="university-id" className="text-gray-300">
@@ -231,12 +287,12 @@ export default function LoginPage() {
                         </button>
                       </div>
                     </div>
+                    
+                    <Button className="w-full mt-6 bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-700 hover:to-pink-700 text-white">
+                      Sign in
+                    </Button>
                   </TabsContent>
                 </Tabs>
-
-                <Button className="w-full mt-6 bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-700 hover:to-pink-700 text-white">
-                  Sign in
-                </Button>
 
                 <button
                   onClick={() => setSelectedUniversity(null)}
@@ -250,55 +306,35 @@ export default function LoginPage() {
                 <div className="absolute inset-0 flex items-center">
                   <Separator className="w-full bg-gray-800" />
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-black px-2 text-gray-500">Or continue with</span>
+                <div className="relative flex justify-center text-xs">
+                  <span className="bg-black px-2 text-gray-400">Or continue with</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
-                <Button
-                  variant="outline"
-                  className="w-full bg-transparent border-gray-800 hover:bg-gray-900 hover:border-blue-500"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5 text-white">
-                    <path
-                      fill="currentColor"
-                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                    />
+              <div className="grid grid-cols-2 gap-4">
+                <Button variant="outline" className="bg-transparent border-gray-800 hover:bg-gray-900 text-gray-300">
+                  <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.283 10.356h-8.327v3.451h4.792c-.446 2.193-2.313 3.453-4.792 3.453a5.27 5.27 0 0 1-5.279-5.28 5.27 5.27 0 0 1 5.279-5.279c1.259 0 2.397.447 3.29 1.178l2.6-2.599c-1.584-1.381-3.615-2.233-5.89-2.233a8.908 8.908 0 0 0-8.934 8.934 8.907 8.907 0 0 0 8.934 8.934c4.467 0 8.529-3.249 8.529-8.934 0-.528-.081-1.097-.202-1.625z"></path>
                   </svg>
+                  Google
                 </Button>
-                <Button
-                  variant="outline"
-                  className="w-full bg-transparent border-gray-800 hover:bg-gray-900 hover:border-blue-500"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5 text-white">
-                    <path
-                      fill="currentColor"
-                      d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-.1.325V1.325C24 .593 23.407 0 22.675 0z"
-                    />
+
+                <Button variant="outline" className="bg-transparent border-gray-800 hover:bg-gray-900 text-gray-300">
+                  <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.9-1.99 1.57-2.987 1.57-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.572-2.27 1.206-2.98.804-.94 2.142-1.64 3.248-1.68.03.13.05.28.05.43zm4.565 15.71c-.03.07-.463 1.58-1.518 3.12-.945 1.34-1.94 2.71-3.43 2.71-1.517 0-1.9-.88-3.63-.88-1.698 0-2.302.91-3.67.91-1.377 0-2.332-1.26-3.428-2.8-1.287-1.82-2.323-4.63-2.323-7.28 0-4.28 2.797-6.55 5.552-6.55 1.448 0 2.675.95 3.6.95.865 0 2.222-1.01 3.902-1.01.613 0 2.886.06 4.374 2.19-.13.09-2.383 1.37-2.383 4.19 0 3.26 2.854 4.42 2.955 4.45z"></path>
                   </svg>
+                  Apple
                 </Button>
-                <Button
-                  variant="outline"
-                  className="w-full bg-transparent border-gray-800 hover:bg-gray-900 hover:border-blue-500"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5 text-white">
-                    <path
-                      fill="currentColor"
-                      d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.9-1.99 1.57-2.987 1.57-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.572-2.27 1.206-2.98.804-.94 2.142-1.64 3.248-1.68.03.13.05.28.05.43zm4.565 15.71c-.03.07-.463 1.58-1.518 3.12-.945 1.34-1.94 2.71-3.43 2.71-1.517 0-1.9-.88-3.63-.88-1.698 0-2.302.91-3.67.91-1.377 0-2.332-1.26-3.428-2.8-1.287-1.82-2.323-4.63-2.323-7.28 0-4.28 2.797-6.55 5.552-6.55 1.448 0 2.675.95 3.6.95.865 0 2.222-1.01 3.902-1.01.613 0 2.886.06 4.374 2.19-.13.09-2.383 1.37-2.383 4.19 0 3.26 2.854 4.42 2.955 4.45z"
-                    />
-                  </svg>
-                </Button>
+              </div>
+
+              <div className="text-center text-sm text-gray-400">
+                Don't have an account?{" "}
+                <Link href="/signup" className="text-blue-400 hover:text-blue-300">
+                  Sign up
+                </Link>
               </div>
             </>
           )}
-
-          <p className="px-8 text-center text-sm text-gray-500">
-            Don&apos;t have an account?{" "}
-            <Link href="/signup" className="underline text-blue-400 hover:text-blue-300">
-              Sign up
-            </Link>
-          </p>
         </div>
       </div>
     </div>
