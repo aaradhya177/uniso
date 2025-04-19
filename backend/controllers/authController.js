@@ -26,49 +26,89 @@ const authController = {
    */
   signup: async (req, res, next) => {
     try {
+      console.log('Signup request received:', req.body);
       const { email, password, firstName, lastName, university, department } = req.body;
 
       // Validate input
       if (!email || !password || !firstName || !lastName || !university || !department) {
+        console.log('Validation failed: Missing fields');
         return res.status(400).json({ 
           success: false, 
           message: 'All fields are required' 
         });
       }
 
-      // Check if email is a valid university email (simple check)
-      if (!email.includes('@') || !email.endsWith('.edu')) {
+      // Basic email validation
+      if (!email.includes('@')) {
+        console.log('Validation failed: Invalid email format');
         return res.status(400).json({ 
           success: false, 
-          message: 'Please use a valid university email' 
+          message: 'Please enter a valid email' 
         });
       }
 
       // Check if user already exists
-      const existingUser = await userModel.findByEmail(email);
-      if (existingUser) {
-        return res.status(409).json({ 
-          success: false, 
-          message: 'User with this email already exists' 
+      try {
+        const existingUser = await userModel.findByEmail(email);
+        if (existingUser) {
+          console.log('User already exists:', email);
+          return res.status(409).json({ 
+            success: false, 
+            message: 'User with this email already exists' 
+          });
+        }
+      } catch (dbError) {
+        console.error('Error checking for existing user:', dbError);
+        return res.status(500).json({
+          success: false,
+          message: 'Database error while checking existing user'
         });
       }
 
       // Hash password
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
+      let hashedPassword;
+      try {
+        const salt = await bcrypt.genSalt(10);
+        hashedPassword = await bcrypt.hash(password, salt);
+      } catch (hashError) {
+        console.error('Error hashing password:', hashError);
+        return res.status(500).json({
+          success: false,
+          message: 'Error processing your request'
+        });
+      }
 
       // Create user
-      const newUser = await userModel.createUser({
-        email,
-        password: hashedPassword,
-        firstName,
-        lastName,
-        university,
-        department
-      });
+      let newUser;
+      try {
+        newUser = await userModel.createUser({
+          email,
+          password: hashedPassword,
+          firstName,
+          lastName,
+          university,
+          department
+        });
+        console.log('User created successfully:', newUser.id);
+      } catch (createError) {
+        console.error('Error creating user:', createError);
+        return res.status(500).json({
+          success: false,
+          message: 'Database error while creating user'
+        });
+      }
 
       // Generate token
-      const token = generateToken(newUser);
+      let token;
+      try {
+        token = generateToken(newUser);
+      } catch (tokenError) {
+        console.error('Error generating token:', tokenError);
+        return res.status(500).json({
+          success: false,
+          message: 'Error generating authentication token'
+        });
+      }
 
       res.status(201).json({
         success: true,
@@ -85,7 +125,11 @@ const authController = {
         }
       });
     } catch (error) {
-      next(error);
+      console.error('Unhandled signup error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error during signup'
+      });
     }
   },
 
@@ -143,7 +187,11 @@ const authController = {
         }
       });
     } catch (error) {
-      next(error);
+      console.error('Login error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error during login'
+      });
     }
   },
 
@@ -178,7 +226,11 @@ const authController = {
         }
       });
     } catch (error) {
-      next(error);
+      console.error('Get current user error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error while retrieving user data'
+      });
     }
   }
 };

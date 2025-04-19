@@ -10,6 +10,7 @@ import { toast } from "sonner"
 export default function SignUp() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -31,28 +32,67 @@ export default function SignUp() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    if (!termsAccepted) {
+      toast.error("Please accept the Terms and Conditions to continue.")
+      return
+    }
+    
     setIsLoading(true)
 
     try {
       // Validate university email
-      if (!formData.email.includes("@") || !formData.email.endsWith(".edu")) {
-        toast.error("Please use a valid university email address.")
+      if (!formData.email.includes("@")) {
+        toast.error("Please enter a valid email address.")
         setIsLoading(false)
         return
       }
 
-      const response = await authApi.signup(formData)
+      // For debugging purposes, log the form data
+      console.log("Submitting form data:", formData);
       
-      // Show success message
-      toast.success("Account created successfully!")
+      // Use the backend API directly with explicit URL
+      const response = await fetch('http://localhost:5000/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
       
-      // Redirect to dashboard
-      router.push("/dashboard")
+      // Log the raw response for debugging
+      console.log("API response status:", response.status);
+      
+      const data = await response.json();
+      console.log("API response data:", data);
+      
+      if (response.ok) {
+        // Show success message
+        toast.success("Account created successfully!");
+        
+        // Store token if provided
+        if (data.data && data.data.token) {
+          localStorage.setItem('token', data.data.token);
+          
+          // Redirect to dashboard with a slight delay to allow toast to be seen
+          setTimeout(() => {
+            router.push("/dashboard");
+          }, 1000);
+        } else {
+          // If no token, redirect to login
+          setTimeout(() => {
+            router.push("/login");
+          }, 1000);
+        }
+      } else {
+        // Show error message from the server
+        toast.error(data.message || "Registration failed.");
+      }
     } catch (error) {
-      console.error("Signup failed:", error)
-      toast.error(error.message || "Registration failed. Please try again.")
+      console.error("Signup failed:", error);
+      toast.error("Failed to connect to the server. Please try again later.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -140,19 +180,27 @@ export default function SignUp() {
               </select>
             </div>
           </div>
-          <Checkbox
-            label={
-              <Typography variant="small" className="font-normal" color="gray">
-                I agree to the
-                <a href="#" className="font-medium transition-colors hover:text-blue-500">
-                  Terms and Conditions
-                </a>
-              </Typography>
-            }
-            containerProps={{ className: "-ml-2.5" }}
-            required
-          />
-          <Button className="mt-6" fullWidth type="submit" disabled={isLoading}>
+          <div className="flex items-center mb-4">
+            <Checkbox
+              checked={termsAccepted}
+              onChange={(e) => setTermsAccepted(e.target.checked)}
+              label={
+                <Typography variant="small" className="font-normal" color="black">
+                  I agree to the{" "}
+                  <a href="#" className="font-medium transition-colors hover:text-blue-500">
+                    Terms and Conditions
+                  </a>
+                </Typography>
+              }
+              containerProps={{ className: "-ml-2.5" }}
+            />
+          </div>
+          <Button 
+            className="mt-6" 
+            fullWidth 
+            type="submit" 
+            disabled={isLoading}
+          >
             {isLoading ? "Creating Account..." : "Sign Up"}
           </Button>
           <Typography color="gray" className="mt-4 text-center font-normal">
