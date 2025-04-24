@@ -1,194 +1,224 @@
-import { ArrowRight, Users, MessageSquare, Share2, Calendar, Briefcase, BookOpen } from "lucide-react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
+import { ArrowRight, Users, MessageSquare, Briefcase, Calendar } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white">
-      <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/60">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Image src="/images/uniconnect-logo.png" alt="UniConnect" width={32} height={32} />
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">
-              UniConnect
-            </span>
+    <div className="flex flex-col min-h-screen bg-white text-black">
+      {/* Header */}
+      <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white bg-opacity-90 backdrop-blur-md">
+        <div className="container mx-auto flex h-16 items-center justify-between px-6">
+          {/* Logo and Text */}
+          <div className="flex items-center gap-3">
+            <Image
+              src="/images/uniso-logo.png"
+              alt="UNiSO Logo"
+              width={40}
+              height={40}
+              className="h-auto opacity-90 hover:opacity-100 transition-opacity"
+            />
+            <Image
+              src="/images/uniso-text.png"
+              alt="UNiSO Text"
+              width={90}
+              height={20}
+              className="h-auto opacity-90 hover:opacity-100 transition-opacity"
+            />
           </div>
-          <div className="flex items-center gap-4">
+
+          {/* Navigation */}
+          <nav className="flex items-center gap-6">
             <Link href="/login">
-              <Button variant="ghost" className="text-gray-300 hover:text-white hover:bg-gray-900">
+              <Button variant="ghost" className="text-gray-600 hover:text-black opacity-90 hover:opacity-100 transition-opacity">
                 Log in
               </Button>
             </Link>
             <Link href="/signup">
-              <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-700">
+              <Button className="bg-blue-500 text-white hover:bg-blue-600 opacity-90 hover:opacity-100 transition-opacity">
                 Sign up
               </Button>
             </Link>
-          </div>
+          </nav>
         </div>
-      </header>
+      </header> 
+
+      {/* Hero Section */}
       <main className="flex-1">
-        <section className="py-20 md:py-32 bg-gradient-to-b from-black to-purple-950">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">
-                  Your university, connected.
-                </h1>
-                <p className="mx-auto max-w-[700px] text-gray-400 md:text-xl">
-                  A social platform exclusively designed for college students, providing a safe and engaging space to
-                  connect, share ideas, and collaborate.
-                </p>
-              </div>
-              <div className="space-x-4">
+        <section className="py-20">
+          <div className="container mx-auto px-6 flex flex-col-reverse lg:flex-row items-center">
+            {/* Left Content */}
+            <div className="lg:w-1/2 text-left">
+              <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
+                Connect, Collaborate, and Grow
+              </h1>
+              <p className="mt-4 text-lg text-gray-600">
+                Join communities, explore opportunities, and stay connected — all in one place.
+              </p>
+              <div className="mt-6 flex gap-4">
                 <Link href="/signup">
-                  <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-700">
+                  <Button className="bg-blue-500 text-white hover:bg-blue-600 px-6 py-3">
                     Get Started <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
                 <Link href="/about">
-                  <Button
-                    variant="outline"
-                    className="border-gray-700 text-gray-300 hover:border-purple-500 hover:text-white"
-                  >
+                  <Button className="bg-gray-100 text-black hover:bg-gray-200 px-6 py-3">
                     Learn More
                   </Button>
                 </Link>
               </div>
             </div>
+
+            {/* Right Image */}
+            <div className="lg:w-1/2 flex justify-center mb-10 lg:mb-0">
+              <Image
+                src="/images/hero-illustration.png" // Replace with the correct path to your uploaded image
+                alt="Hero Illustration"
+                width={500}
+                height={500}
+                className="max-w-full h-auto"
+              />
+            </div>
           </div>
         </section>
 
-        <section className="py-12 md:py-24 bg-black border-t border-gray-900">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">
-                  Key Features
-                </h2>
-                <p className="mx-auto max-w-[700px] text-gray-400 md:text-xl">
-                  Everything you need to make the most of your university experience.
+        {/* Communities Section */}
+        <section className="py-12 bg-gray-50 bg-opacity-90 flex items-center justify-center">
+          <div className="container mx-auto px-6 text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Communities
+            </h2>
+            <p className="mt-4 text-lg text-gray-600">
+              Join vibrant communities to chat, share, and collaborate just like Discord.
+            </p>
+            <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {/* Study Groups */}
+              <div className="relative group p-6 border border-gray-200 rounded-lg transform transition-transform hover:scale-105 bg-white bg-opacity-90 hover:bg-opacity-100">
+                <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
+                  <Users className="text-blue-500" />
+                </div>
+                <h3 className="mt-4 text-lg font-semibold">Study Groups</h3>
+                <p className="mt-2 text-sm text-gray-600">
+                  Collaborate with peers in study groups tailored to your interests.
                 </p>
+                {/* Hover Card */}
+                <div className="absolute inset-0 bg-white p-4 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <p className="text-sm text-gray-600">
+                    Join study groups to collaborate on projects, share knowledge, and grow together.
+                  </p>
+                </div>
+              </div>
+
+              {/* Discussion Forums */}
+              <div className="relative group p-6 border border-gray-200 rounded-lg transform transition-transform hover:scale-105 bg-white bg-opacity-90 hover:bg-opacity-100">
+                <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
+                  <MessageSquare className="text-blue-500" />
+                </div>
+                <h3 className="mt-4 text-lg font-semibold">Discussion Forums</h3>
+                <p className="mt-2 text-sm text-gray-600">
+                  Engage in meaningful conversations on topics that matter to you.
+                </p>
+                {/* Hover Card */}
+                <div className="absolute inset-0 bg-white p-4 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <p className="text-sm text-gray-600">
+                    Participate in forums to discuss ideas, ask questions, and share insights with others.
+                  </p>
+                </div>
+              </div>
+
+              {/* Daily Updates */}
+              <div className="relative group p-6 border border-gray-200 rounded-lg transform transition-transform hover:scale-105 bg-white bg-opacity-90 hover:bg-opacity-100">
+                <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
+                  <Calendar className="text-blue-500" />
+                </div>
+                <h3 className="mt-4 text-lg font-semibold">Daily Updates</h3>
+                <p className="mt-2 text-sm text-gray-600">
+                  Stay informed with the latest updates, announcements, and events happening in your community.
+                </p>
+                {/* Hover Card */}
+                <div className="absolute inset-0 bg-white p-4 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <p className="text-sm text-gray-600">
+                    Get daily updates on events, announcements, and activities in your community.
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 mt-12">
-              <div className="flex flex-col items-center space-y-2 rounded-lg border border-gray-800 p-6 shadow-sm transition-all hover:shadow-md hover:shadow-purple-900/20 hover:border-purple-900/50 bg-gradient-to-b from-gray-900/50 to-black">
-                <div className="rounded-full bg-purple-900/20 p-3 border border-purple-900/50">
-                  <Users className="h-6 w-6 text-blue-400" />
+          </div>
+        </section>
+
+        {/* Opportunities Section */}
+        <section className="py-12 bg-white bg-opacity-90 flex items-center justify-center">
+          <div className="container mx-auto px-6 text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Opportunities
+            </h2>
+            <p className="mt-4 text-lg text-gray-600">
+              Discover job opportunities, internships, and networking events like LinkedIn.
+            </p>
+            <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {/* Job Board */}
+              <div className="relative group p-6 border border-gray-200 rounded-lg transform transition-transform hover:scale-105 bg-white bg-opacity-90 hover:bg-opacity-100">
+                <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
+                  <Briefcase className="text-blue-500" />
                 </div>
-                <h3 className="text-xl font-bold">Community Groups</h3>
-                <p className="text-center text-gray-400">
-                  Join groups based on interests, courses, or colleges within the university.
+                <h3 className="mt-4 text-lg font-semibold">Job Board</h3>
+                <p className="mt-2 text-sm text-gray-600">
+                  Explore job postings from top companies and organizations.
                 </p>
-              </div>
-              <div className="flex flex-col items-center space-y-2 rounded-lg border border-gray-800 p-6 shadow-sm transition-all hover:shadow-md hover:shadow-purple-900/20 hover:border-purple-900/50 bg-gradient-to-b from-gray-900/50 to-black">
-                <div className="rounded-full bg-purple-900/20 p-3 border border-purple-900/50">
-                  <MessageSquare className="h-6 w-6 text-blue-400" />
+                {/* Hover Card */}
+                <div className="absolute inset-0 bg-white p-4 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <p className="text-sm text-gray-600">
+                    Browse job listings from leading companies and find your next career opportunity.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold">Discussion Forums</h3>
-                <p className="text-center text-gray-400">Participate in meaningful conversations on various topics.</p>
               </div>
-              <div className="flex flex-col items-center space-y-2 rounded-lg border border-gray-800 p-6 shadow-sm transition-all hover:shadow-md hover:shadow-purple-900/20 hover:border-purple-900/50 bg-gradient-to-b from-gray-900/50 to-black">
-                <div className="rounded-full bg-purple-900/20 p-3 border border-purple-900/50">
-                  <Share2 className="h-6 w-6 text-blue-400" />
+
+              {/* Networking Events */}
+              <div className="relative group p-6 border border-gray-200 rounded-lg transform transition-transform hover:scale-105 bg-white bg-opacity-90 hover:bg-opacity-100">
+                <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
+                  <Calendar className="text-blue-500" />
                 </div>
-                <h3 className="text-xl font-bold">Resource Sharing</h3>
-                <p className="text-center text-gray-400">
-                  Access and share study materials, notes, and other resources with peers.
+                <h3 className="mt-4 text-lg font-semibold">Networking Events</h3>
+                <p className="mt-2 text-sm text-gray-600">
+                  Stay updated on events to connect with professionals and peers.
                 </p>
-              </div>
-              <div className="flex flex-col items-center space-y-2 rounded-lg border border-gray-800 p-6 shadow-sm transition-all hover:shadow-md hover:shadow-purple-900/20 hover:border-purple-900/50 bg-gradient-to-b from-gray-900/50 to-black">
-                <div className="rounded-full bg-purple-900/20 p-3 border border-purple-900/50">
-                  <Calendar className="h-6 w-6 text-blue-400" />
+                {/* Hover Card */}
+                <div className="absolute inset-0 bg-white p-4 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <p className="text-sm text-gray-600">
+                    Attend networking events to meet professionals and grow your connections.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold">Event Calendar</h3>
-                <p className="text-center text-gray-400">Stay updated on upcoming events, workshops, and seminars.</p>
               </div>
-              <div className="flex flex-col items-center space-y-2 rounded-lg border border-gray-800 p-6 shadow-sm transition-all hover:shadow-md hover:shadow-purple-900/20 hover:border-purple-900/50 bg-gradient-to-b from-gray-900/50 to-black">
-                <div className="rounded-full bg-purple-900/20 p-3 border border-purple-900/50">
-                  <Briefcase className="h-6 w-6 text-blue-400" />
+
+              {/* Professional Connections */}
+              <div className="relative group p-6 border border-gray-200 rounded-lg transform transition-transform hover:scale-105 bg-white bg-opacity-90 hover:bg-opacity-100">
+                <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
+                  <Users className="text-blue-500" />
                 </div>
-                <h3 className="text-xl font-bold">Job Board</h3>
-                <p className="text-center text-gray-400">
-                  Explore opportunities posted by relevant businesses and organizations.
+                <h3 className="mt-4 text-lg font-semibold">Professional Connections</h3>
+                <p className="mt-2 text-sm text-gray-600">
+                  Build meaningful relationships with industry professionals and mentors.
                 </p>
-              </div>
-              <div className="flex flex-col items-center space-y-2 rounded-lg border border-gray-800 p-6 shadow-sm transition-all hover:shadow-md hover:shadow-purple-900/20 hover:border-purple-900/50 bg-gradient-to-b from-gray-900/50 to-black">
-                <div className="rounded-full bg-purple-900/20 p-3 border border-purple-900/50">
-                  <BookOpen className="h-6 w-6 text-blue-400" />
+                {/* Hover Card */}
+                <div className="absolute inset-0 bg-white p-4 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <p className="text-sm text-gray-600">
+                    Connect with mentors and industry professionals to grow your career.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold">Personalized Profile</h3>
-                <p className="text-center text-gray-400">
-                  Create a profile showcasing your interests, skills, and achievements.
-                </p>
               </div>
             </div>
           </div>
         </section>
       </main>
-      <footer className="border-t border-gray-800 bg-black">
-        <div className="container flex flex-col gap-4 py-10 md:flex-row md:gap-8">
-          <div className="flex-1 space-y-4">
-            <div className="flex items-center gap-2">
-              <Image src="/images/uniconnect-logo.png" alt="UniConnect" width={24} height={24} />
-              <span className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">
-                UniConnect
-              </span>
-            </div>
-            <p className="text-sm text-gray-400">
-              Your university, connected. A social platform exclusively designed for college students.
-            </p>
-          </div>
-          <div className="flex flex-col md:flex-row gap-8 md:gap-12">
-            <div className="space-y-2">
-              <h4 className="font-medium text-white">Platform</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li>
-                  <Link href="#" className="hover:text-purple-400">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-purple-400">
-                    Colleges
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-purple-400">
-                    Departments
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div className="space-y-2">
-              <h4 className="font-medium text-white">Company</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li>
-                  <Link href="#" className="hover:text-purple-400">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-purple-400">
-                    Privacy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-purple-400">
-                    Terms
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div className="border-t border-gray-800 py-6">
-          <div className="container flex flex-col items-center justify-between gap-4 md:flex-row">
-            <p className="text-center text-sm text-gray-500 md:text-left">© 2025 UniConnect. All rights reserved.</p>
-          </div>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-200 bg-gray-50">
+        <div className="container mx-auto px-6 py-10 text-center">
+          <p className="text-sm text-gray-500">
+            © 2025 UNiSO. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
-  )
+  );
 }
