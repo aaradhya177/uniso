@@ -15,9 +15,9 @@ export function middleware(request) {
   const sessionCookie = request.cookies.get("uniconnect_session")
 
   // If no session cookie and trying to access protected route, redirect to login
-  if (!sessionCookie && !path.startsWith("/api/")) {
-    return NextResponse.redirect(new URL("/login", request.url))
-  }
+  // if (!sessionCookie && !path.startsWith("/api/")) {
+  //   return NextResponse.redirect(new URL("/login", request.url))
+  // }
 
   // For API routes, return 401 if not authenticated
   if (!sessionCookie && path.startsWith("/api/")) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -8,6 +9,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [selectedUniversity, setSelectedUniversity] = useState("");
+  const router = useRouter(); // Initialize useRouter
 
   // Function to generate a random password
   const generatePassword = () => {
@@ -30,6 +32,16 @@ export default function SignupPage() {
 
     // Shuffle the password to randomize character positions
     setPassword(generatedPassword.split("").sort(() => Math.random() - 0.5).join(""));
+  };
+
+  // Function to handle form submission
+  const handleSignup = (e) => {
+    e.preventDefault();
+    // Perform signup logic here (e.g., API call)
+    console.log("User signed up!");
+
+    // Redirect to the login page
+    router.push("/login");
   };
 
   return (
@@ -66,7 +78,7 @@ export default function SignupPage() {
       <div className="relative z-10 flex flex-1 items-center justify-center">
         <div className="bg-gray-800 p-10 rounded-lg shadow-2xl w-full max-w-md animate-border">
           <h2 className="text-2xl font-bold text-center text-white mb-6">Create Your Account</h2>
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSignup}>
             {/* Full Name */}
             <div>
               <label

@@ -1,15 +1,29 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [password, setPassword] = useState("");
+  const router = useRouter(); // Initialize useRouter
 
   const handleRememberMeChange = () => {
     setRememberMe(!rememberMe);
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    console.log("User logged in!");
+
+    // Example: Set a cookie to indicate the user is logged in
+    document.cookie = "authToken=valid; path=/";
+
+    // Redirect to the options page
+    router.push("/options");
   };
 
   return (
@@ -46,7 +60,7 @@ export default function LoginPage() {
       <div className="relative z-10 flex flex-1 items-center justify-center">
         <div className="bg-gray-800 p-10 rounded-lg shadow-2xl w-full max-w-md animate-border">
           <h2 className="text-2xl font-bold text-center text-white mb-6">Log In</h2>
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleLogin}>
             {/* Email Address */}
             <div>
               <label
@@ -76,11 +90,13 @@ export default function LoginPage() {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="mt-2 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   placeholder="••••••••"
                   required
-                  pattern="(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}"
-                  title="Password must be at least 8 characters long, contain one uppercase letter, and one number."
+                  pattern="(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}"
+                  title="Password must be at least 8 characters long, contain one uppercase letter, one special symbol, and one number."
                 />
                 <button
                   type="button"
